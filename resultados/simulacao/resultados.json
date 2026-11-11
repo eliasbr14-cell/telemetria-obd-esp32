@@ -1,0 +1,259 @@
+{
+  "ambiente": {
+    "python": "3.13.16",
+    "so": "Linux-6.18.44-fc-v114-x86_64-with-glibc2.39",
+    "processador": "x86_64",
+    "nucleos": 2,
+    "data": "2026-10-10 14:57:52",
+    "tempo_quadro_8B_us": 270.0,
+    "bits_quadro_8B": 135
+  },
+  "E1": {
+    "duracao_s": 240.0,
+    "ciclos_publicados": 2104,
+    "mensagens_recebidas": 2104,
+    "perdidas": 0,
+    "duplicadas": 0,
+    "requisicoes": 21040,
+    "respostas": 21040,
+    "timeouts": 0,
+    "respostas_invalidas": 0,
+    "rtt_can_ms": {
+      "n": 21040,
+      "media": 11.311022282271946,
+      "desvio": 1.935419207844951,
+      "min": 8.050766999986081,
+      "p50": 11.278461999950196,
+      "p95": 14.00659900014034,
+      "p99": 14.375235489897022,
+      "max": 83.24821400015026
+    },
+    "ciclo_ms": {
+      "n": 2104,
+      "media": 113.28860931558935,
+      "desvio": 6.2532640994720445,
+      "min": 94.966,
+      "p50": 113.214,
+      "p95": 122.51639999999999,
+      "p99": 128.61741999999998,
+      "max": 207.155
+    },
+    "latencia_mqtt_ms": {
+      "n": 2104,
+      "media": 0.6449164773121533,
+      "desvio": 0.26287868869948844,
+      "min": 0.2715587615966797,
+      "p50": 0.5934238433837891,
+      "p95": 0.8862853050231931,
+      "p99": 1.7878699302673258,
+      "max": 4.395484924316406
+    },
+    "taxa_atualizacao_hz": 8.766666666666667,
+    "deteccao_dtc_ms": 824.6941566467285,
+    "consultas_dtc": 117,
+    "exatidao": [
+      {
+        "pid": "0x0C",
+        "grandeza": "Rotação do motor",
+        "unidade": "rpm",
+        "amostras": 2104,
+        "resolucao": 0.25,
+        "erro_medio_abs": 0.06246961664018543,
+        "erro_max_abs": 0.12462232818188568,
+        "limite_teorico": 0.125,
+        "dentro_limite": true
+      },
+      {
+        "pid": "0x0D",
+        "grandeza": "Velocidade do veículo",
+        "unidade": "km/h",
+        "amostras": 2104,
+        "resolucao": 1,
+        "erro_medio_abs": 0.2160968228961289,
+        "erro_max_abs": 0.49942139108209815,
+        "limite_teorico": 0.5,
+        "dentro_limite": true
+      },
+      {
+        "pid": "0x05",
+        "grandeza": "Temperatura do líquido de arrefecimento",
+        "unidade": "°C",
+        "amostras": 2104,
+        "resolucao": 1,
+        "erro_medio_abs": 0.24917495625842803,
+        "erro_max_abs": 0.49984004899478407,
+        "limite_teorico": 0.5,
+        "dentro_limite": true
+      },
+      {
+        "pid": "0x0B",
+        "grandeza": "Pressão absoluta do coletor de admissão (MAP)",
+        "unidade": "kPa",
+        "amostras": 2104,
+        "resolucao": 1,
+        "erro_medio_abs": 0.24413235037111858,
+        "erro_max_abs": 0.49938436346230475,
+        "limite_teorico": 0.5,
+        "dentro_limite": true
+      },
+      {
+        "pid": "0x04",
+        "grandeza": "Carga calculada do motor",
+        "unidade": "%",
+        "amostras": 2104,
+        "resolucao": 0.39215686274509803,
+        "erro_medio_abs": 0.10010914744057263,
+        "erro_max_abs": 0.19602900034796633,
+        "limite_teorico": 0.19607843137254902,
+        "dentro_limite": true
+      },
+      {
+        "pid": "0x11",
+        "grandeza": "Posição absoluta da borboleta",
+        "unidade": "%",
+        "amostras": 2104,
+        "resolucao": 0.39215686274509803,
+        "erro_medio_abs": 0.05812707758171924,
+        "erro_max_abs": 0.19597595119792288,
+        "limite_teorico": 0.19607843137254902,
+        "dentro_limite": true
+      },
+      {
+        "pid": "0x06",
+        "grandeza": "Ajuste de combustível de curto prazo (banco 1)",
+        "unidade": "%",
+        "amostras": 2104,
+        "resolucao": 0.78125,
+        "erro_medio_abs": 0.19480825060064808,
+        "erro_max_abs": 0.39060409317580946,
+        "limite_teorico": 0.390625,
+        "dentro_limite": true
+      },
+      {
+        "pid": "0x0F",
+        "grandeza": "Temperatura do ar de admissão",
+        "unidade": "°C",
+        "amostras": 2104,
+        "resolucao": 1,
+        "erro_medio_abs": 0.24088112953443766,
+        "erro_max_abs": 0.4990043111719302,
+        "limite_teorico": 0.5,
+        "dentro_limite": true
+      },
+      {
+        "pid": "0x2F",
+        "grandeza": "Nível de combustível no tanque",
+        "unidade": "%",
+        "amostras": 2104,
+        "resolucao": 0.39215686274509803,
+        "erro_medio_abs": 0.0927100355089585,
+        "erro_max_abs": 0.1959221991810267,
+        "limite_teorico": 0.19607843137254902,
+        "dentro_limite": true
+      },
+      {
+        "pid": "0x42",
+        "grandeza": "Tensão do módulo de controle (bateria/alternador)",
+        "unidade": "V",
+        "amostras": 2104,
+        "resolucao": 0.001,
+        "erro_medio_abs": 0.0002553693311543277,
+        "erro_max_abs": 0.0004999684942958993,
+        "limite_teorico": 0.0005,
+        "dentro_limite": true
+      }
+    ]
+  },
+  "E2": [
+    {
+      "atraso_ecu_ms": 0,
+      "n_pids": 10,
+      "ciclos": 2719,
+      "ciclo_medio_ms": 11.033468186833394,
+      "taxa_por_pid_hz": 90.63333333333334,
+      "leituras_por_s": 906.3333333333334,
+      "rtt_medio_ms": 1.0879775917979595,
+      "timeouts": 0,
+      "carga_barramento_pct": 48.942
+    },
+    {
+      "atraso_ecu_ms": 10,
+      "n_pids": 10,
+      "ciclos": 266,
+      "ciclo_medio_ms": 112.78195488721805,
+      "taxa_por_pid_hz": 8.866666666666667,
+      "leituras_por_s": 88.66666666666667,
+      "rtt_medio_ms": 11.293057980449197,
+      "timeouts": 0,
+      "carga_barramento_pct": 4.788
+    },
+    {
+      "atraso_ecu_ms": 25,
+      "n_pids": 10,
+      "ciclos": 115,
+      "ciclo_medio_ms": 260.8695652173913,
+      "taxa_por_pid_hz": 3.8333333333333335,
+      "leituras_por_s": 38.333333333333336,
+      "rtt_medio_ms": 26.16224904782425,
+      "timeouts": 0,
+      "carga_barramento_pct": 2.07
+    },
+    {
+      "atraso_ecu_ms": 50,
+      "n_pids": 10,
+      "ciclos": 59,
+      "ciclo_medio_ms": 508.47457627118644,
+      "taxa_por_pid_hz": 1.9666666666666666,
+      "leituras_por_s": 19.666666666666668,
+      "rtt_medio_ms": 51.159010427112804,
+      "timeouts": 0,
+      "carga_barramento_pct": 1.0619999999999998
+    }
+  ],
+  "E3": [
+    {
+      "atraso_ecu_ms": 10,
+      "n_pids": 1,
+      "ciclos": 1754,
+      "ciclo_medio_ms": 11.402508551881414,
+      "taxa_por_pid_hz": 87.7,
+      "leituras_por_s": 87.7,
+      "rtt_medio_ms": 11.352859472635604,
+      "timeouts": 0,
+      "carga_barramento_pct": 4.735799999999999
+    },
+    {
+      "atraso_ecu_ms": 10,
+      "n_pids": 3,
+      "ciclos": 589,
+      "ciclo_medio_ms": 33.95585738539898,
+      "taxa_por_pid_hz": 29.45,
+      "leituras_por_s": 88.35,
+      "rtt_medio_ms": 11.308837560840063,
+      "timeouts": 0,
+      "carga_barramento_pct": 4.7709
+    },
+    {
+      "atraso_ecu_ms": 10,
+      "n_pids": 5,
+      "ciclos": 353,
+      "ciclo_medio_ms": 56.657223796033996,
+      "taxa_por_pid_hz": 17.65,
+      "leituras_por_s": 88.25,
+      "rtt_medio_ms": 11.323072016430727,
+      "timeouts": 0,
+      "carga_barramento_pct": 4.7655
+    },
+    {
+      "atraso_ecu_ms": 10,
+      "n_pids": 10,
+      "ciclos": 176,
+      "ciclo_medio_ms": 113.63636363636364,
+      "taxa_por_pid_hz": 8.8,
+      "leituras_por_s": 88.0,
+      "rtt_medio_ms": 11.350998941476446,
+      "timeouts": 0,
+      "carga_barramento_pct": 4.752
+    }
+  ]
+}

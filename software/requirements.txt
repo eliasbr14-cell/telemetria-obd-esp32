@@ -1,0 +1,6 @@
+python-can>=4.3
+paho-mqtt>=2.0
+flask>=3.0
+matplotlib
+pandas
+numpy

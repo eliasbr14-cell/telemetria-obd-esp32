@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Telemetria Veicular — Painel</title>
+<style>
+  :root{
+    --bg:#0b0d10; --painel:#14171c; --borda:#232831; --texto:#e8ecf1; --sub:#8a93a0;
+    --ok:#3ddc84; --aviso:#ffb020; --perigo:#ff4d4f; --acento:#33b5ff; --trilho:#262b33;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--texto);font:14px/1.35 "Segoe UI",Roboto,system-ui,sans-serif}
+  header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--borda)}
+  header h1{font-size:16px;margin:0;letter-spacing:.06em;text-transform:uppercase}
+  header h1 span{color:var(--sub);font-weight:400;text-transform:none;letter-spacing:0;margin-left:8px}
+  .status{display:flex;gap:18px;color:var(--sub);font-size:12px;font-variant-numeric:tabular-nums}
+  .status b{color:var(--texto);font-weight:600}
+  .pt{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--perigo);margin-right:6px;vertical-align:middle}
+  .pt.on{background:var(--ok)}
+  main{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;padding:14px 20px}
+  .card{background:var(--painel);border:1px solid var(--borda);border-radius:10px;padding:12px 14px;position:relative}
+  .card h2{margin:0 0 6px;font-size:11px;font-weight:600;color:var(--sub);letter-spacing:.08em;text-transform:uppercase}
+  .g-grande{grid-column:span 5}.g-media{grid-column:span 4}.g-lateral{grid-column:span 3}
+  .g-6{grid-column:span 6}.g-12{grid-column:span 12}.g-3{grid-column:span 3}
+  canvas{display:block;width:100%}
+  .valor{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums}
+  .unid{font-size:13px;color:var(--sub);margin-left:4px;font-weight:400}
+  .barra{height:10px;background:var(--trilho);border-radius:5px;overflow:hidden;margin-top:8px}
+  .barra i{display:block;height:100%;background:var(--acento);width:0;transition:width .15s}
+  .linha{display:flex;justify-content:space-between;align-items:baseline}
+  .mini{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .mil{display:flex;align-items:center;gap:10px}
+  .mil .icone{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;background:var(--trilho);color:var(--sub);font-weight:800}
+  .mil.on .icone{background:var(--aviso);color:#111}
+  .dtc{font-family:ui-monospace,Consolas,monospace;font-size:18px;color:var(--aviso);margin-top:6px}
+  .desc{color:var(--sub);font-size:12px}
+  @media (max-width:1000px){.g-grande,.g-media,.g-lateral,.g-6,.g-3{grid-column:span 12}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Telemetria OBD-II <span>ESP32 · CAN 500 kbit/s · MQTT</span></h1>
+  <div class="status">
+    <div><span id="ptCon" class="pt"></span><b id="txtCon">desconectado</b></div>
+    <div>Taxa <b id="txtTaxa">–</b> Hz</div>
+    <div>Ciclo OBD <b id="txtCiclo">–</b> ms</div>
+    <div>Latência MQTT <b id="txtLat">–</b> ms</div>
+    <div>Msg <b id="txtSeq">–</b></div>
+  </div>
+</header>
+
+<main>
+  <section class="card g-grande"><h2>Rotação do motor</h2><canvas id="gRpm" height="260"></canvas></section>
+  <section class="card g-media"><h2>Pressão do coletor (MAP) · vácuo / pressão</h2><canvas id="gMap" height="260"></canvas></section>
+  <section class="card g-lateral">
+    <h2>Velocidade</h2>
+    <div><span class="valor" id="vVel">–</span><span class="unid">km/h</span></div>
+    <h2 style="margin-top:16px">Temperatura do motor</h2>
+    <div class="linha"><div><span class="valor" id="vTemp">–</span><span class="unid">°C</span></div></div>
+    <div class="barra"><i id="bTemp"></i></div>
+    <h2 style="margin-top:16px">Combustível</h2>
+    <div class="linha"><div><span class="valor" id="vComb">–</span><span class="unid">%</span></div></div>
+    <div class="barra"><i id="bComb"></i></div>
+  </section>
+
+  <section class="card g-3"><h2>Borboleta</h2><span class="valor" id="vBorb">–</span><span class="unid">%</span><div class="barra"><i id="bBorb"></i></div></section>
+  <section class="card g-3"><h2>Carga do motor</h2><span class="valor" id="vCarga">–</span><span class="unid">%</span><div class="barra"><i id="bCarga"></i></div></section>
+  <section class="card g-3"><h2>Mistura · ajuste curto prazo (STFT)</h2><span class="valor" id="vStft">–</span><span class="unid">%</span><canvas id="gStft" height="24" style="margin-top:8px"></canvas></section>
+  <section class="card g-3">
+    <div class="mini">
+      <div><h2>Bateria / alternador</h2><span class="valor" id="vTens">–</span><span class="unid">V</span></div>
+      <div><h2>Ar de admissão</h2><span class="valor" id="vIat">–</span><span class="unid">°C</span></div>
+    </div>
+  </section>
+
+  <section class="card g-6"><h2>Histórico · últimos 60 s (RPM e velocidade)</h2><canvas id="hist" height="200"></canvas></section>
+  <section class="card g-6">
+    <h2>Diagnóstico (Modo 03)</h2>
+    <div class="mil" id="mil"><div class="icone">MIL</div><div><b id="milTxt">Sem falhas registradas</b><div class="desc" id="milSub">Aguardando consulta de DTCs…</div></div></div>
+    <div class="dtc" id="dtcs"></div>
+    <div class="desc" id="dtcDesc"></div>
+  </section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const DESCR = {P0300:"Falha de ignição aleatória/múltiplos cilindros",P0301:"Falha de ignição – cilindro 1",
+  P0117:"Sensor de temperatura do motor – sinal baixo",P0118:"Sensor de temperatura do motor – sinal alto",
+  P0171:"Mistura pobre – banco 1",P0172:"Mistura rica – banco 1",P0217:"Superaquecimento do motor",P0562:"Tensão do sistema baixa"};
+
+function prepararCanvas(c){
+  const r = window.devicePixelRatio||1, w = c.clientWidth, h = c.getAttribute("height")*1;
+  c.width = w*r; c.height = h*r; c.style.height = h+"px";
+  const ctx = c.getContext("2d"); ctx.setTransform(r,0,0,r,0,0); return [ctx,w,h];
+}
+
+// Mostrador em arco (estilo painel de instrumentos)
+function mostrador(c, valor, o){
+  const [ctx,w,h] = prepararCanvas(c);
+  const cx=w/2, cy=h*0.62, R=Math.min(w*0.42,h*0.55), a0=Math.PI*0.8, a1=Math.PI*2.2;
+  const ang = v => a0+(a1-a0)*Math.min(1,Math.max(0,(v-o.min)/(o.max-o.min)));
+  ctx.lineCap="round";
+  ctx.lineWidth=16; ctx.strokeStyle=css("--trilho"); ctx.beginPath(); ctx.arc(cx,cy,R,a0,a1); ctx.stroke();
+  (o.zonas||[]).forEach(z=>{ctx.strokeStyle=z.cor;ctx.lineWidth=4;ctx.beginPath();ctx.arc(cx,cy,R+13,ang(z.de),ang(z.ate));ctx.stroke();});
+  if(valor!=null){
+    let cor=o.cor||css("--acento"); (o.zonas||[]).forEach(z=>{if(valor>=z.de&&valor<=z.ate&&z.pinta)cor=z.cor;});
+    ctx.lineWidth=16; ctx.strokeStyle=cor; ctx.beginPath();
+    const base = o.base!=null?o.base:o.min;
+    ctx.arc(cx,cy,R,Math.min(ang(base),ang(valor)),Math.max(ang(base),ang(valor))); ctx.stroke();
+  }
+  ctx.fillStyle=css("--sub"); ctx.font="11px sans-serif"; ctx.textAlign="center";
+  o.marcas.forEach(m=>{const a=ang(m);ctx.fillText(o.rotulo?o.rotulo(m):m, cx+Math.cos(a)*(R-30), cy+Math.sin(a)*(R-30)+4);});
+  ctx.fillStyle=css("--texto"); ctx.font="700 40px sans-serif";
+  ctx.fillText(valor==null?"–":o.fmt(valor), cx, cy+12);
+  ctx.fillStyle=css("--sub"); ctx.font="13px sans-serif"; ctx.fillText(o.unid, cx, cy+34);
+  if(o.extra) { ctx.fillText(o.extra(valor), cx, cy+54); }
+}
+
+function barraCentro(c, v){ // STFT: -25..+25 %
+  const [ctx,w,h]=prepararCanvas(c); const meio=w/2;
+  ctx.fillStyle=css("--trilho"); ctx.fillRect(0,7,w,10);
+  ctx.fillStyle=css("--sub"); ctx.fillRect(meio-1,2,2,20);
+  if(v!=null){const x=Math.max(-1,Math.min(1,v/25))*meio; ctx.fillStyle=Math.abs(v)>10?css("--aviso"):css("--ok");
+    ctx.fillRect(Math.min(meio,meio+x),7,Math.abs(x),10);}
+}
+
+const hist=[]; // {t,rpm,vel}
+function desenharHist(){
+  const c=$("hist"); const [ctx,w,h]=prepararCanvas(c); const pad=34, agora=Date.now()/1000;
+  ctx.strokeStyle=css("--borda"); ctx.lineWidth=1; ctx.fillStyle=css("--sub"); ctx.font="10px sans-serif";
+  for(let i=0;i<=4;i++){const y=pad/2+(h-pad)*i/4; ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(w-pad,y);ctx.stroke();
+    ctx.textAlign="right"; ctx.fillText(6000-1500*i,pad-4,y+3); ctx.textAlign="left"; ctx.fillText(160-40*i,w-pad+4,y+3);}
+  const serie=(k,max,cor)=>{ctx.strokeStyle=cor;ctx.lineWidth=2;ctx.beginPath();let ini=false;
+    hist.forEach(p=>{if(p[k]==null)return;const x=pad+(w-2*pad)*(1-(agora-p.t)/60), y=pad/2+(h-pad)*(1-p[k]/max);
+      ini?ctx.lineTo(x,y):(ctx.moveTo(x,y),ini=true);}); ctx.stroke();};
+  serie("rpm",6000,css("--acento")); serie("vel",160,css("--ok"));
+  ctx.fillStyle=css("--acento"); ctx.textAlign="left"; ctx.fillText("RPM (eixo esq.)",pad+4,12);
+  ctx.fillStyle=css("--ok"); ctx.fillText("km/h (eixo dir.)",pad+110,12);
+}
+
+const ATM=101.3;
+function atualizar(p){
+  const d=p.dados;
+  mostrador($("gRpm"), d.rpm, {min:0,max:7000,unid:"rpm",fmt:v=>Math.round(v),marcas:[0,1000,2000,3000,4000,5000,6000,7000],
+    rotulo:m=>m/1000, zonas:[{de:5500,ate:6200,cor:css("--aviso"),pinta:true},{de:6200,ate:7000,cor:css("--perigo"),pinta:true}]});
+  // MAP: exibido como pressão relativa à atmosfera (bar); negativo = vácuo
+  const rel = d.map==null?null:(d.map-ATM)/100;
+  mostrador($("gMap"), rel, {min:-1,max:1,base:0,unid:"bar (relativo)",fmt:v=>(v>0?"+":"")+v.toFixed(2),
+    marcas:[-1,-0.5,0,0.5,1], cor:css("--acento"), extra:()=> d.map==null?"":`MAP absoluto ${d.map.toFixed(0)} kPa`});
+  $("vVel").textContent = d.velocidade==null?"–":Math.round(d.velocidade);
+  const t=d.temp_arrefecimento; $("vTemp").textContent=t==null?"–":t.toFixed(0);
+  $("bTemp").style.width = t==null?0:Math.max(0,Math.min(100,(t-20)/(120-20)*100))+"%";
+  $("bTemp").style.background = t>105?css("--perigo"):t<70?css("--acento"):css("--ok");
+  const f=d.nivel_combustivel; $("vComb").textContent=f==null?"–":f.toFixed(0);
+  $("bComb").style.width=(f||0)+"%"; $("bComb").style.background=f<15?css("--perigo"):css("--ok");
+  [["Borb","borboleta"],["Carga","carga_motor"]].forEach(([id,k])=>{const v=d[k];$("v"+id).textContent=v==null?"–":v.toFixed(0);$("b"+id).style.width=(v||0)+"%";});
+  $("vStft").textContent = d.stft_b1==null?"–":(d.stft_b1>0?"+":"")+d.stft_b1.toFixed(1); barraCentro($("gStft"), d.stft_b1);
+  $("vTens").textContent = d.tensao_modulo==null?"–":d.tensao_modulo.toFixed(2);
+  $("vIat").textContent = d.temp_admissao==null?"–":d.temp_admissao.toFixed(0);
+  hist.push({t:p.ts,rpm:d.rpm,vel:d.velocidade}); while(hist.length && Date.now()/1000-hist[0].t>60) hist.shift();
+  desenharHist();
+  $("txtCiclo").textContent=p.ciclo_ms.toFixed(0); $("txtLat").textContent=p.latencia_ms!=null?p.latencia_ms.toFixed(1):"–"; $("txtSeq").textContent=p.seq;
+  chegadas.push(Date.now()); while(chegadas.length && Date.now()-chegadas[0]>3000) chegadas.shift();
+  $("txtTaxa").textContent=(chegadas.length/3).toFixed(1);
+}
+const chegadas=[];
+
+function atualizarDtc(p){
+  const on=p.dtcs.length>0; $("mil").classList.toggle("on",on);
+  $("milTxt").textContent = on?`${p.dtcs.length} falha(s) registrada(s)`:"Sem falhas registradas";
+  $("milSub").textContent = "Última consulta: "+new Date(p.ts*1000).toLocaleTimeString("pt-BR");
+  $("dtcs").textContent = p.dtcs.join("  ");
+  $("dtcDesc").textContent = p.dtcs.map(c=>`${c}: ${DESCR[c]||"consultar tabela SAE J2012"}`).join(" · ");
+}
+
+function conectar(){
+  const es=new EventSource("/api/stream");
+  es.onopen=()=>{$("ptCon").classList.add("on");$("txtCon").textContent="conectado";};
+  es.onerror=()=>{$("ptCon").classList.remove("on");$("txtCon").textContent="reconectando…";};
+  es.addEventListener("dados",e=>atualizar(JSON.parse(e.data)));
+  es.addEventListener("dtc",e=>atualizarDtc(JSON.parse(e.data)));
+}
+mostrador($("gRpm"),null,{min:0,max:7000,unid:"rpm",fmt:v=>v,marcas:[0,1000,2000,3000,4000,5000,6000,7000],rotulo:m=>m/1000});
+mostrador($("gMap"),null,{min:-1,max:1,unid:"bar (relativo)",fmt:v=>v,marcas:[-1,-0.5,0,0.5,1]});
+desenharHist(); conectar();
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+[
+ {
+  "ensaio": "janela_5min",
+  "inicio": "2026-10-16T23:15:51.226128-03:00",
+  "fim": "2026-10-16T23:20:57.490793-03:00",
+  "duracao_s": 306.3,
+  "publicadas": 8810,
+  "recebidas": 8810,
+  "perdidas": 0,
+  "perda_pct": 0.0,
+  "taxa_hz": 28.77,
+  "ciclo_medio_ms": 6.453,
+  "ciclo_desvio_ms": 0.096,
+  "ciclo_min_ms": 6.211,
+  "ciclo_max_ms": 6.962,
+  "leituras_nulas": 0,
+  "consultas_dtc": 143,
+  "dtc_com_P0300": 133
+ },
+ {
+  "ensaio": "longa_duracao_60min",
+  "inicio": "2026-10-16T23:26:10.370033-03:00",
+  "fim": "2026-10-17T00:25:50.868339-03:00",
+  "duracao_s": 3580.5,
+  "publicadas": 112823,
+  "recebidas": 110690,
+  "perdidas": 2133,
+  "perda_pct": 1.891,
+  "taxa_hz": 30.91,
+  "ciclo_medio_ms": 6.48,
+  "ciclo_desvio_ms": 0.09,
+  "ciclo_min_ms": 6.216,
+  "ciclo_max_ms": 7.055,
+  "leituras_nulas": 0,
+  "consultas_dtc": 1703,
+  "dtc_com_P0300": 1691
+ }
+]
