@@ -19,12 +19,12 @@
   <text x="900" y="28" class="t b">(iv) Apresentação</text>
 
   <rect x="20" y="50" width="330" height="200" rx="8" class="gr"/>
-  <text x="32" y="72" class="s b">Cenário A — veículo real</text>
-  <rect x="40" y="90" width="120" height="70" rx="6" class="cx"/><text x="100" y="120" text-anchor="middle" class="t">ECU</text><text x="100" y="140" text-anchor="middle" class="s">(injeção)</text>
+  <text x="32" y="72" class="s b">Cenário A — hardware em bancada</text>
+  <rect x="40" y="90" width="120" height="70" rx="6" class="cx" stroke-dasharray="5 4"/><text x="100" y="120" text-anchor="middle" class="t">ECU</text><text x="100" y="140" text-anchor="middle" class="s">(ligação projetada)</text>
   <rect x="210" y="90" width="120" height="70" rx="6" class="ac"/><text x="270" y="115" text-anchor="middle" class="t">ESP32</text><text x="270" y="133" text-anchor="middle" class="s">+ SN65HVD230</text><text x="270" y="150" text-anchor="middle" class="s">(firmware)</text>
-  <path d="M160 125 H208" class="l" marker-end="url(#m)" marker-start="url(#m)"/>
+  <path d="M160 125 H208" class="l" stroke-dasharray="5 4" marker-end="url(#m)" marker-start="url(#m)"/>
   <text x="184" y="182" text-anchor="middle" class="s">CAN 500 kbit/s</text><text x="184" y="198" text-anchor="middle" class="s">conector OBD-II</text>
-  <text x="270" y="218" text-anchor="middle" class="s">ou modo AUTOTESTE</text><text x="270" y="234" text-anchor="middle" class="s">(TWAI loopback)</text>
+  <text x="270" y="218" text-anchor="middle" class="s">testado em modo</text><text x="270" y="234" text-anchor="middle" class="s">AUTOTESTE (TWAI)</text>
 
   <rect x="20" y="280" width="330" height="200" rx="8" class="gr"/>
   <text x="32" y="302" class="s b">Cenário B — ambiente simulado (validação)</text>
@@ -39,9 +39,9 @@
   <path d="M330 125 C 380 125, 380 235, 398 240" class="l" marker-end="url(#m)"/>
   <path d="M330 355 C 380 355, 380 285, 398 280" class="l" marker-end="url(#m)"/>
   <text x="398" y="200" class="s" text-anchor="start">Wi-Fi</text>
-  <text x="500" y="345" text-anchor="middle" class="s">tópicos:</text>
-  <text x="500" y="362" text-anchor="middle" class="s">telemetria/polo/dados (QoS 0)</text>
-  <text x="500" y="379" text-anchor="middle" class="s">telemetria/polo/dtc (QoS 1)</text>
+  <text x="500" y="345" text-anchor="middle" class="s">tópicos MQTT:</text>
+  <text x="500" y="362" text-anchor="middle" class="s">dados (QoS 0)</text>
+  <text x="500" y="379" text-anchor="middle" class="s">falhas/DTC (QoS 1)</text>
 
   <!-- servidor -->
   <rect x="600" y="170" width="250" height="180" rx="8" class="cx"/>
